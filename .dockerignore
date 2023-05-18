@@ -1,0 +1,27 @@
+.git
+.ipynb_checkpoints
+.DS_Store
+.gitignore
+README.md
+env.*
+src/env.*
+# To prevent storing dev/temporary container data
+*.csv
+tmp
+
+/.git*
+/.idea*
+.dockerignore
+.editorconfig
+storage/mysql-data
+vendor/
+/tools/*/vendor/
+bootstrap/cache
+!bootstrap/cache/.gitignore
+.phpstorm.meta.php
+Dockerfile
+_ide_helper.php
+docker-compose.yml
+docker-compose-test-ci.yml
+docker-compose-staging.yml
+docker-compose-prod.yml

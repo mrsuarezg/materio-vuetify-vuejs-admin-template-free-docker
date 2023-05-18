@@ -1,0 +1,60 @@
+version: '3.8'
+
+networks:
+  laravel-dev:
+    driver: bridge
+
+services:
+  app:
+    container_name: ${PROJECT_NAME}-app
+    image: cotizadorsoriana/spa:dev
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    entrypoint: /usr/local/bin/docker-php-entrypoint-dev
+    command:
+      [
+        "/usr/bin/supervisord",
+        "-n",
+        "-c",
+        "/etc/supervisord.conf"
+      ]
+    ports:
+      - ${NGINX_PORT}:80
+    volumes:
+      - .:/var/www/html:delegated
+    networks:
+      - laravel-dev
+
+  db:
+    container_name: ${PROJECT_NAME}-db
+    ports:
+      - ${DB_PORT}:3306
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql-dev
+    volumes:
+      - 'dbdev:/var/lib/mysql'
+    networks:
+      - laravel-dev
+
+  node:
+    container_name: ${PROJECT_NAME}-node
+    volumes:
+      - .:/var/www/html:delegated
+      - ./Docker/dockerscripts/:/dockerscripts/:ro
+    entrypoint:
+      - /dockerscripts/nodeservice.sh
+    networks:
+      - laravel-dev
+volumes:
+  dbdev:
+    driver: local

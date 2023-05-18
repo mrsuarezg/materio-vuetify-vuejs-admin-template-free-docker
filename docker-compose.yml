@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    image: cotizadorsoriana/spa:latest
+    build:
+      context: ./Docker
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    container_name: ${PROJECT_NAME}-app
+    volumes:
+      - .:/var/www/html:delegated
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.6
+    container_name: ${PROJECT_NAME}-db
+    restart: unless-stopped
+    tty: true
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      SERVICE_NAME: mariadb
+
+  node:
+    image: node:20-alpine3.16
+    container_name: ${PROJECT_NAME}-node
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html:delegated
