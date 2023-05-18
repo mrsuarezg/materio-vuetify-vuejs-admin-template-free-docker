@@ -5,6 +5,11 @@
 /public/images/
 /public/storage/
 /public/*
+!/public/index.php
+!/public/web.config
+!/public/.htaccess
+!/public/robots.txt
+!/public/favicon.ico
 /storage/*.key
 /vendor
 .env
